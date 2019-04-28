@@ -2,7 +2,7 @@
 <emitter imageName="" name="Pulse" renderType="inherit" useAdditive="true" useOriented="false">
 <spawnInterval enabled="true" max="100.0" min="100.0"/>
 <spawnCount enabled="false" max="100.0" min="100.0"/>
-<initialLife enabled="true" max="2000.0" min="2000.0"/>
+<initialLife enabled="true" max="1300.0" min="1300.0"/>
 <initialSize enabled="false" max="10.0" min="10.0"/>
 <xOffset enabled="true" max="0.0" min="0.0"/>
 <yOffset enabled="true" max="0.0" min="0.0"/>

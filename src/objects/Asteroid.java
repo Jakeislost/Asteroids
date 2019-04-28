@@ -18,7 +18,7 @@ import org.newdawn.slick.particles.ParticleSystem;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.ResourceLoader;
 
-import resources.AsteroidHandler;
+import handlers.AsteroidHandler;
 import resources.Util;
 import states.Game;
 
@@ -31,6 +31,8 @@ public class Asteroid extends GameObject{
 		small();
 	}
 	
+	public boolean target;
+	
 	//shape, movement and type
 	private AsteroidType type;
 	public float angle, speed;
@@ -39,7 +41,6 @@ public class Asteroid extends GameObject{
 	//explosion particles + explosion life
 	private ParticleSystem pSys;
 	private ConfigurableEmitter emitter;
-	private int life, limit = 10;
 	private boolean hit;
 	
 	private Sound explosion;
@@ -94,13 +95,9 @@ public class Asteroid extends GameObject{
 	public void update(GameContainer gc, StateBasedGame gsm, int delta, ArrayList<GameObject> object) {
         if(hit) {
         	//play explosion and increment lifetime until death
-	       	life++;
-			emitter.setPosition(Asteroid.getCenterX(), Asteroid.getCenterY(), false);
+	       	emitter.setPosition(Asteroid.getCenterX(), Asteroid.getCenterY(), false);
 			pSys.update(delta);
-			if(life > limit) {
-				emitter.wrapUp();
-				if(pSys.getParticleCount() == 0) object.remove(this);
-			}
+			if(pSys.getParticleCount() == 0) object.remove(this);
         } else {
         	//movement
 	        Asteroid = (Polygon) Asteroid.transform(Transform.createRotateTransform(-0.05f, Asteroid.getCenterX(), Asteroid.getCenterY()));
@@ -112,7 +109,7 @@ public class Asteroid extends GameObject{
 
 	@Override
 	public void draw(Graphics g) {
-		g.setColor(Color.white);
+		g.setColor((target) ? Color.red : Color.white);
 		//clip for cleaner graphics
 		g.setClip(Game.GAME_START_X, Game.GAME_START_Y, Game.GAME_END_X - Game.GAME_START_X, Game.GAME_END_Y - Game.GAME_START_Y);
 		if(!hit)g.draw(Asteroid);

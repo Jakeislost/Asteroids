@@ -2,10 +2,8 @@ package game;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
-import org.newdawn.slick.util.ResourceLoader;
 
 import states.Game;
 import states.GameOver;
@@ -17,7 +15,6 @@ public class Manager extends StateBasedGame{
 
 	public Manager(String name) {
 		super(name);
-		
 	}
 	
 	public static void main(String[] args) {

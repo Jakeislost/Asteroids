@@ -13,8 +13,7 @@ import org.newdawn.slick.geom.Point;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import objects.Handler;
-import objects.Player;
+import handlers.Handler;
 import resources.UI;
 import resources.Util;
 
@@ -52,12 +51,14 @@ public class Main extends BasicGameState{
 			Util.addObject("res/xml/ExplosionMedium.xml", "explosionMedium");
 			Util.addObject("res/xml/ExplosionLarge.xml", "explosionLarge");
 			Util.addObject("res/xml/powerup.xml", "powerup");
+			Util.addObject("res/xml/Pulse.xml", "pulse");
 			Util.addObject("res/xml/Rocket.xml", "rocket");
 			Util.addObject("res/xml/Stars.xml", "stars");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 	}
 
 	@Override
@@ -89,6 +90,7 @@ public class Main extends BasicGameState{
 		}
 		
 		handler.input(IM);
+		
 		
 	}
 

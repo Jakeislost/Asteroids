@@ -10,17 +10,18 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.particles.ConfigurableEmitter;
-import org.newdawn.slick.particles.ParticleIO;
 import org.newdawn.slick.particles.ParticleSystem;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-import org.newdawn.slick.util.ResourceLoader;
 
-import objects.Handler;
+import handlers.AsteroidHandler;
+import handlers.Handler;
+import objects.GameObject;
 import objects.Player;
-import objects.Powerup;
-import resources.AsteroidHandler;
+import objects.UFO;
 import resources.Util;
+import weapons.abilities.Pulse;
+import weapons.guns.Blaster;
 
 public class Game extends BasicGameState{
 	
@@ -80,13 +81,24 @@ public class Game extends BasicGameState{
 	}
 	
 	public void reset(GameContainer gc, StateBasedGame gsm) {
+		
+		if(handler != null) {
+			for(GameObject o : handler.getObjectList()) {
+				if(o instanceof UFO) {
+					((UFO)o).dispose();
+				}
+			}
+		}
+		
 		handler = new Handler();
 		AH = new AsteroidHandler(handler);
 		IM = gc.getInput();
 		
+		score = 0;
+		
 		IM.addKeyListener(gsm);
 		IM.addMouseListener(gsm);
-		handler.addOject(new Player(350, 350, 0));
+		handler.addOject(new Player(350, 350, 0, new Blaster(handler), new Pulse(handler)));
 	}
 
 	@Override

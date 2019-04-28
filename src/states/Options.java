@@ -12,7 +12,7 @@ import org.newdawn.slick.geom.Point;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import objects.Handler;
+import handlers.Handler;
 import objects.Player;
 import resources.UI;
 

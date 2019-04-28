@@ -14,30 +14,31 @@ import org.newdawn.slick.geom.Point;
 import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Transform;
 import org.newdawn.slick.particles.ConfigurableEmitter;
-import org.newdawn.slick.particles.ParticleIO;
 import org.newdawn.slick.particles.ParticleSystem;
 import org.newdawn.slick.state.StateBasedGame;
-import org.newdawn.slick.util.ResourceLoader;
 
+import resources.FrameTimer;
 import resources.Util;
 import states.Game;
+import weapons.objects.Bullet;
 
 public class UFO extends GameObject{
 	
 	//movement, shape;
 	private float speed = 1;
 	private float angle;
+	private int iterations = 20;
 	private Polygon UFO;
 	private Line[] UFOLine;
 	
 	private boolean hit;
-	private int life, lifeTime = 10;
 	private ParticleSystem pSys;
 	private ConfigurableEmitter emitter;
 	
 	private Sound siren;
 	
-	private int delay, wait = 60, shoot = 15;
+	private FrameTimer timer;
+	
 
 	public UFO() {
 		super(Game.GAME_END_X + 50, 0);
@@ -62,6 +63,7 @@ public class UFO extends GameObject{
 			e.printStackTrace();
 		}
 		pSys.setBlendingMode(ParticleSystem.BLEND_ADDITIVE);
+		timer = new FrameTimer(60, false);
 	}
 
 	@Override
@@ -79,34 +81,38 @@ public class UFO extends GameObject{
 				}
 			}
 			
-			delay++;
-			if(delay == wait) {
+			timer.update();
+			if(timer.isDone()) {
+				timer.resetTimer();
 				for(GameObject o : object) {
 					if(o instanceof Player) {
+						
+						Polygon ship = ((Player) o).getPolygon().copy();
+						float xDir = ((Player) o).xDir;
+						float yDir = ((Player) o).yDir;
+						for(int i = 0; i < iterations; i++) {
+							ship = (Polygon) ship.transform(Transform.createTranslateTransform(yDir, xDir * -1));
+						}
+						
 						angle = 0;
-						angle = (float) Math.toRadians(getAngleFromPoint(
+						angle = (float) Math.toRadians(Util.getAngleFromPoint(
 								new Point(UFO.getCenterX(), UFO.getCenterY()), 
-								new Point(((Player) o).getPolygon().getCenterX(), ((Player) o).getPolygon().getCenterY())
+								new Point(ship.getCenterX(), ship.getCenterY())
 								));
+						
+						object.add(new Bullet(UFO.getCenterX(), UFO.getCenterY(), angle, 100, false));
 						
 						break;
 					}
 				}
-			} else if(delay >= wait + shoot) {
-				delay = 0;
-				object.add(new Bullet(UFO.getCenterX(), UFO.getCenterY(), angle, false));
 			}
 			if(!siren.playing()) siren.loop();
 		} else {
 			siren.stop();
 			//play explosion and increment lifetime until death
-	       	life++;
 			emitter.setPosition(UFO.getCenterX(), UFO.getCenterY(), false);
 			pSys.update(delta);
-			if(life > lifeTime) {
-				emitter.wrapUp();
-				if(pSys.getParticleCount() == 0) object.remove(this);
-			}
+			if(pSys.getParticleCount() == 0) object.remove(this);
 		}
 		
 	}
@@ -125,21 +131,8 @@ public class UFO extends GameObject{
 		g.clearClip();
 	}
 	
-	public double getAngleFromPoint(Point firstPoint, Point secondPoint) {
-
-	    if((secondPoint.getX() > firstPoint.getX())) {//above 0 to 180 degrees
-
-	        return (Math.atan2((secondPoint.getX() - firstPoint.getX()), (firstPoint.getY() - secondPoint.getY())) * 180 / Math.PI);
-
-	    }
-	    else if((secondPoint.getX() < firstPoint.getX())) {//above 180 degrees to 360/0
-
-	        return 360 - (Math.atan2((firstPoint.getX() - secondPoint.getX()), (firstPoint.getY() - secondPoint.getY())) * 180 / Math.PI);
-
-	    }//End if((secondPoint.x > firstPoint.x) && (secondPoint.y <= firstPoint.y))
-
-	    return Math.atan2(0 ,0);
-
+	public void dispose() {
+		if(siren.playing()) siren.stop();
 	}
 	
 	public void moveUFO(float xDir) {

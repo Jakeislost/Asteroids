@@ -138,4 +138,8 @@ public class Powerup extends GameObject{
 		return box;
 	}
 	
+	public boolean isPickedup() {
+		return pickedUp;
+	}
+	
 }
